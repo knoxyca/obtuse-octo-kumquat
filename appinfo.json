@@ -1,0 +1,43 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Pebble",
+    "longName": "Kal Tire WatchFace",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/favicon.png",
+                "menuIcon": true,
+                "name": "MENU_ICON",
+                "type": "png"
+            },
+            {
+                "characterRegex": "[0-9:.]",
+                "file": "fonts/Open 24 Display St.ttf",
+                "name": "CLOCK_FONT_64",
+                "type": "font"
+            },
+            {
+                "file": "images/logo.png",
+                "name": "LOGO_PNG",
+                "type": "png"
+            },
+            {
+                "file": "fonts/comic.ttf",
+                "name": "COMIC_SANS_28",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "2",
+    "shortName": "KT WatchFace",
+    "uuid": "517bc228-cc82-4458-bf68-cc245560afac",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
