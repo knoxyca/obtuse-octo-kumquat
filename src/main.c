@@ -1,4 +1,7 @@
 #include <pebble.h>
+
+#define BATTERY_W_STEP 14
+#define BATTERY_H_STEP 16
   
 static Window *s_main_window;
 static TextLayer *s_time_hours_layer;
@@ -8,12 +11,31 @@ static GFont s_time_font;
 static GFont s_battery_font;
 static BitmapLayer *s_background_layer;
 static GBitmap *s_background_bitmap;
+static InverterLayer *s_battery_inverter_layer;
+static InverterLayer *s_background_inverter_layer;
 
+
+static void draw_battery_inverter(int battery_charge){
+  /*
+  battery_charge is expected to be between 1 and 10
+  defined above:
+  BATTERY_W_STEP: 14
+  BATTERY_H_STEP: 16
+  We're using these numbers as the display resolution doesn't lend itself to 10 equal steps... This will leaves us with a border when charge is 100%
+  */
+  int w = battery_charge * BATTERY_W_STEP;
+  //int h = battery_charge * BATTERY_H_STEP;
+  
+  inverter_layer_destroy(s_battery_inverter_layer);
+  s_battery_inverter_layer = inverter_layer_create(GRect(2, (168/2)-20, w, 40));
+  layer_add_child(window_get_root_layer(s_main_window), inverter_layer_get_layer(s_battery_inverter_layer));
+}
 
 static void handle_battery(BatteryChargeState charge_state) {
   static char batterybuffer[] = "000%";
   snprintf(batterybuffer, sizeof("100%"), "%u%%", charge_state.charge_percent);
   text_layer_set_text(s_battery_layer, batterybuffer);
+  draw_battery_inverter(charge_state.charge_percent / 10);
 
 }
 static void update_time() {
@@ -44,9 +66,11 @@ static void update_time() {
 static void main_window_load(Window *window) {
   // Create GBitmap, then set to created BitmapLayer
   s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_LOGO_PNG);
-  s_background_layer = bitmap_layer_create(GRect(0, (168/2)-18, 144, 36));
+  s_background_layer = bitmap_layer_create(GRect(2, (168/2)-18, 140, 36));
   bitmap_layer_set_bitmap(s_background_layer, s_background_bitmap);
   layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_background_layer));
+  s_background_inverter_layer = inverter_layer_create(GRect(2, (168/2)-20, 140, 40));
+  layer_add_child(window_get_root_layer(window), inverter_layer_get_layer(s_background_inverter_layer));
   
   // Create time TextLayer
   //s_time_layer = text_layer_create(GRect(0, 168-75, 144, 50));
@@ -75,10 +99,11 @@ static void main_window_load(Window *window) {
   text_layer_set_font(s_battery_layer, s_battery_font);
   text_layer_set_text_alignment(s_battery_layer, GTextAlignmentRight);
   
-  // Add it as a child layer to the Window's root layer
+  // Add it as InverterLayer *inverter_layera child layer to the Window's root layer
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_hours_layer));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_minutes_layer));
+
   
   // Make sure the time is displayed from the start
   update_time();
@@ -95,6 +120,7 @@ static void main_window_unload(Window *window) {
   text_layer_destroy(s_time_hours_layer);
   text_layer_destroy(s_time_minutes_layer);
   text_layer_destroy(s_battery_layer);
+  inverter_layer_destroy(s_battery_inverter_layer);
   fonts_unload_custom_font(s_time_font);
   fonts_unload_custom_font(s_battery_font);
 }

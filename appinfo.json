@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/logo.png",
+                "name": "LOGO_PNG",
+                "type": "png"
+            },
+            {
                 "file": "images/favicon.png",
                 "menuIcon": true,
                 "name": "MENU_ICON",
@@ -19,11 +24,6 @@
                 "file": "fonts/Open 24 Display St.ttf",
                 "name": "CLOCK_FONT_64",
                 "type": "font"
-            },
-            {
-                "file": "images/logo.png",
-                "name": "LOGO_PNG",
-                "type": "png"
             },
             {
                 "file": "fonts/comic.ttf",
